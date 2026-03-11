@@ -44,6 +44,7 @@ pipeline {
                 expression { env.PIPELINE_ENV != 'build' }
             }
             steps {
+                script { env.APP_VERSION = sh(script: "node -p \"require('./package.json').version\"", returnStdout: true).trim() }
                 buildAndPushDockerImage(env.IMAGE_NAME, env.DOCKER_CREDENTIALS_ID)
             }
         }
@@ -63,7 +64,7 @@ pipeline {
             }
             steps {
                 echo "Deploy to ${env.PIPELINE_ENV} - placeholder for Kubernetes (Phase 5)"
-                echo "Image: ${IMAGE_NAME}:${env.IMAGE_TAG}"
+                echo "Full image: ${env.FULL_IMAGE}"
             }
         }
     }
