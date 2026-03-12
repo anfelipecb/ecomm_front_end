@@ -1,0 +1,46 @@
+# For prod, build with: REACT_APP_PRODUCT_PORT=30201 REACT_APP_ORDER_PORT=30202
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecomm-frontend
+  namespace: ecomm-prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ecomm-frontend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: ecomm-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: PLACEHOLDER_IMAGE
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
