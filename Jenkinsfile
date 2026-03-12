@@ -58,13 +58,25 @@ pipeline {
             }
         }
 
+        stage('Validate Manifests') {
+            when {
+                expression { env.PIPELINE_ENV != 'build' }
+            }
+            steps {
+                script {
+                    validateK8sManifests(['deployment.yaml', 'service.yaml'])
+                }
+            }
+        }
+
         stage('Deploy') {
             when {
                 expression { env.PIPELINE_ENV != 'build' }
             }
             steps {
-                echo "Deploy to ${env.PIPELINE_ENV} - placeholder for Kubernetes (Phase 5)"
-                echo "Full image: ${env.FULL_IMAGE}"
+                script {
+                    deployToK8s('ecomm-frontend', 'frontend', ['deployment.yaml', 'service.yaml'])
+                }
             }
         }
     }
